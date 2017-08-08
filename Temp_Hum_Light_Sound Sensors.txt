@@ -1,0 +1,41 @@
+// AM2302 humidity - temperature sensor
+
+//Include Header File
+#include "cactus_io_AM2302.h"
+
+// The AM2302 Data wire is connected to Pin 2 On the Arduino Uno
+#define AM2302_PIN 2 
+
+// Initialize DHT sensor for normal 16mhz Arduino.
+AM2302 dht(AM2302_PIN);                                             
+
+// This setup function opens serial port, sets data rate to 9600 bps, and creates headers for the data table.
+void setup() {
+  Serial.begin(9600); 
+  Serial.println("AM2302 Humidity - Temperature Sensor");
+  Serial.println("RH\t\tTemp (C)\tTemp (F)\tHeat Index (C)\t Heat Index (F)");
+ 
+  dht.begin();
+}
+
+// This function commands the AM2302 to pull a reading
+void loop() {
+  dht.readHumidity();
+  dht.readTemperature();
+  
+  // Error Checking; Detect and notify if the sensor fails to read and then try again.
+  if (isnan(dht.humidity) || isnan(dht.temperature_C)) {
+    Serial.println("Sensor read failure!");
+    return;
+  }
+
+  // Print the readings/data under the correct table heading 
+  Serial.print(dht.humidity); Serial.print(" %\t\t");
+  Serial.print(dht.temperature_C); Serial.print(" *C\t");
+  Serial.print(dht.temperature_F); Serial.print(" *F\t");
+  Serial.print(dht.computeHeatIndex_C()); Serial.print(" *C\t");
+  Serial.print(dht.computeHeatIndex_F()); Serial.println(" *F");
+  
+  // 3 second reading delay
+  delay(3000);
+}
