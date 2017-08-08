@@ -1,5 +1,3 @@
-// AM2302 humidity - temperature sensor
-
 //Include Header File
 #include "cactus_io_AM2302.h"
 
